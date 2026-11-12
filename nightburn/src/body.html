@@ -1,0 +1,112 @@
+<div id="app">
+<canvas id="gl"></canvas>
+<div id="ui"><div id="stage">
+
+  <section id="home" class="screen" hidden>
+    <header class="topbar">
+      <div class="brand"><h1>NIGHT<em>BURN</em></h1><p>Street racing</p></div>
+      <div class="top-actions">
+        <div class="chip" title="Credits"><i class="cr"></i><b id="creditsHome">0</b></div>
+        <button class="icon-btn" id="btnFull" aria-label="Full screen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        <button class="icon-btn" id="btnSettings" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+      </div>
+    </header>
+    <div class="home-bottom">
+      <div class="card track-card">
+        <span class="eyebrow">Circuit</span>
+        <div class="row">
+          <button class="arrow" id="trkPrev" aria-label="Previous circuit"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <div class="trk-info"><h2 id="trkName">Neon Harbor</h2><p id="trkMeta">3 laps</p></div>
+          <button class="arrow" id="trkNext" aria-label="Next circuit"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+        <p class="keys">Arrows steer · Space nitro · Shift drift</p>
+      </div>
+      <div class="home-cta">
+        <button class="btn" id="btnGarage"><span>Garage <small id="homeCar">Vesper GT</small></span></button>
+        <button class="btn primary" id="btnRace"><span>Race</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="garage" class="screen" hidden>
+    <header class="topbar">
+      <button class="btn sm" id="garBack"><span>Back</span></button>
+      <div class="chip" title="Credits"><i class="cr"></i><b id="creditsGar">0</b></div>
+    </header>
+    <div class="gar-panel">
+      <div class="gar-head">
+        <button class="arrow" id="carPrev" aria-label="Previous car"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="gar-title"><h2 id="carName">Vesper GT</h2><span class="eyebrow" id="carClass">Street</span></div>
+        <button class="arrow" id="carNext" aria-label="Next car"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Top speed</span><div class="bar"><i id="stTop"></i></div><b id="stTopV">0</b></div>
+        <div class="stat"><span>Launch</span><div class="bar"><i id="stAcc"></i></div><b id="stAccV">0</b></div>
+        <div class="stat"><span>Handling</span><div class="bar"><i id="stGrip"></i></div><b id="stGripV">0</b></div>
+        <div class="stat"><span>Nitro</span><div class="bar"><i id="stBoost"></i></div><b id="stBoostV">0</b></div>
+      </div>
+      <div class="swatches" id="swatches"></div>
+      <button class="btn primary" id="carAction"><span>Select</span></button>
+    </div>
+  </section>
+
+  <div id="hud" hidden>
+    <div class="hud-tl">
+      <div class="pos"><b id="hudPos">8</b><sup id="hudOrd">TH</sup><span>/ <i id="hudTotal">8</i></span></div>
+      <div class="lap">LAP <b id="hudLap">1</b> / <span id="hudLaps">3</span></div>
+    </div>
+    <div class="hud-tc"><div id="hudTime">0:00.00</div><div id="hudBest"></div></div>
+    <div class="hud-tr">
+      <button class="icon-btn" id="btnPause" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></button>
+      <canvas id="minimap" width="208" height="208"></canvas>
+    </div>
+    <div class="hud-bc"><div class="speed"><b id="hudSpeed">0</b><span>KM/H</span></div><div class="gear" id="hudGear">GEAR 1</div></div>
+    <div id="hudMsg"></div>
+    <div id="wrongWay" hidden>Wrong way</div>
+    <div id="countdown"></div>
+  </div>
+
+  <div id="touch" hidden>
+    <div id="steerZone"></div>
+    <div id="slideHint">Slide to steer<i id="slideKnob"></i></div>
+    <button class="tbtn steer" id="tLeft" aria-label="Steer left"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>
+    <button class="tbtn steer" id="tRight" aria-label="Steer right"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8"/></svg></button>
+    <button class="tbtn" id="tDrift" aria-label="Brake and drift">DRIFT</button>
+    <button class="tbtn" id="tNitro" aria-label="Nitro"><i class="ring"></i><i class="core">N2O</i></button>
+  </div>
+
+  <div id="menu" class="overlay" hidden>
+    <div class="sheet">
+      <h2 id="menuTitle">Paused</h2>
+      <div>
+        <div class="opt"><span>Steering</span><div class="seg" data-opt="steer"><button data-v="buttons">Buttons</button><button data-v="slide">Slide</button></div></div>
+        <div class="opt"><span>Graphics</span><div class="seg" data-opt="quality"><button data-v="auto">Auto</button><button data-v="high">High</button><button data-v="low">Low</button></div></div>
+        <div class="opt"><span>Music</span><div class="seg" data-opt="music"><button data-v="on">On</button><button data-v="off">Off</button></div></div>
+        <div class="opt"><span>Sound effects</span><div class="seg" data-opt="sfx"><button data-v="on">On</button><button data-v="off">Off</button></div></div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn primary" id="menuResume"><span>Resume</span></button>
+        <button class="btn" id="menuRestart"><span>Restart race</span></button>
+        <button class="btn" id="menuQuit"><span>Quit to home</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="results" class="overlay" hidden>
+    <div class="sheet">
+      <span class="eyebrow" id="resTrack">Neon Harbor</span>
+      <div class="res-place"><b id="resPlace">1ST</b><span id="resLine">Race complete</span></div>
+      <div class="rows" id="resRows"></div>
+      <div class="sheet-actions">
+        <button class="btn primary" id="resAgain"><span>Race again</span></button>
+        <button class="btn" id="resHome"><span>Home</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loading" class="overlay">
+    <div class="load-box"><span class="eyebrow" id="loadTag">Starting engine</span><h2 id="loadName">Nightburn</h2><div class="load-bar"><i></i></div></div>
+  </div>
+
+</div></div>
+</div>
