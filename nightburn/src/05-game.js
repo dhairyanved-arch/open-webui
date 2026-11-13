@@ -32,7 +32,7 @@ class Particles {
   }
 }
 
-function disposeCar(g) { if (!g) return; dropGlows(g); g.traverse(o => { if (o.geometry && o.geometry !== carParts.wheel) o.geometry.dispose(); if (o.material) o.material.dispose(); }); }
+function disposeCar(g) { if (!g) return; dropGlows(g); g.traverse(o => { if (o.geometry && o.geometry !== carParts.wheel) o.geometry.dispose(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose()); }); }
 
 function startRace() {
   if (race) endRace();
@@ -210,14 +210,14 @@ const camTmp = { x: 0, z: 0, idx: 0 }, camLook = new THREE.Vector3();
 function updateCamera(dt) {
   const R = race, T = R.T, p = R.player, cam = R.cam, aspect = gfx.w / gfx.h;
   const sf = clamp(p.speed / p.def.top, 0, 1.4);
-  const land = 56 + sf * 9 + p.boost * 13, port = 2 * Math.atan(Math.tan((50 + sf * 6 + p.boost * 9) * Math.PI / 360) / aspect) * 180 / Math.PI;
+  const land = 56 + sf * 9 + p.boost * 8, port = 2 * Math.atan(Math.tan((50 + sf * 6 + p.boost * 6) * Math.PI / 360) / aspect) * 180 / Math.PI;
   cam.fov = Math.min(112, Math.max(land, port)); cam.aspect = aspect; cam.updateProjectionMatrix();
   R.camY = damp(R.camY, p.y, p.air ? 3 : 9, dt);
   let yaw, dist, hgt;
   if (R.state === 'count') { const k = smooth(0, 3.7, R.countT); yaw = p.yaw + lerp(2.7, 0, k); dist = lerp(10.5, 7.4, k); hgt = lerp(1.7, 2.55, k); R.camYaw = p.yaw; }
   else if (p.finished) { R.orbit += dt * .55; yaw = p.yaw + Math.PI + Math.sin(R.orbit) * 1.2; dist = 9.5; hgt = 2.2; }
   else { R.camYaw = dampAng(R.camYaw, p.velAng + p.slip * .25, 5.5, dt); yaw = R.camYaw; dist = 7.4 + p.boost * 1.6 + sf * .8; hgt = 2.55 + sf * .25; }
-  const sh = R.shake * .32 + p.boost * .035;
+  const sh = R.shake * .32 + p.boost * .008;
   let cx = p.x - Math.sin(yaw) * dist + (Math.random() - .5) * sh, cz = p.z - Math.cos(yaw) * dist + (Math.random() - .5) * sh, cy = R.camY + hgt + (Math.random() - .5) * sh;
   // keep the camera inside the barriers and above the tarmac
   camTmp.x = cx; camTmp.z = cz; camTmp.idx = p.idx; T.project(camTmp);
@@ -230,7 +230,7 @@ function updateCamera(dt) {
   if (fwd) cam.rotateZ(p.steer * .03 * sf - Math.asin(T.sb[p.idx]) * .35);
   T.sky.position.copy(cam.position); T.sky.material.uniforms.time.value = R.clock;
   R.shake = damp(R.shake, 0, 5, dt);
-  R.blur = damp(R.blur, clamp((sf - .8) * .7, 0, .25) + p.boost * .75, 5, dt);
+  R.blur = damp(R.blur, p.boost * .5, 5, dt);
 }
 
 function updateRace(dt) {

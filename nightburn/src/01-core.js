@@ -47,8 +47,10 @@ const TRACKS = [
 
 // ---------------- save data ----------------
 const SAVE_KEY = 'nightburn.save.v1';
-const save = { credits: 0, owned: ['vesper'], car: 0, paints: {}, track: 0, best: {}, music: 'on', sfx: 'on', steer: 'buttons', quality: 'auto' };
-function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && typeof s === 'object') Object.assign(save, s); } catch (e) { /* storage unavailable */ } }
+const save = { credits: 0, owned: ['vesper'], car: 0, paints: {}, track: 0, best: {}, music: 'on', sfx: 'on', steer: 'buttons', quality: 'auto', orient: '' };
+function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && typeof s === 'object') Object.assign(save, s); } catch (e) { /* storage unavailable */ }
+  // phones default to landscape mode: an upright screen is turned sideways for the wider view
+  if (save.orient !== 'landscape' && save.orient !== 'device') { let touch = false; try { touch = matchMedia('(pointer: coarse)').matches; } catch (e) {} save.orient = touch ? 'landscape' : 'device'; } }
 function storeSave() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* storage unavailable */ } }
 const paintOf = i => (save.paints[CARS[i].id] !== undefined ? save.paints[CARS[i].id] : CARS[i].paint);
 
@@ -70,9 +72,9 @@ function initInput() {
   bindHold($('tNitro'), () => input.nitroTap = 1, null);
   // slide steering: drag horizontally anywhere on the left half
   const zone = $('steerZone'), knob = $('slideKnob'); let sid = null, sx = 0;
-  const setA = v => { input.analog = v; knob.style.transform = 'translateX(' + (v * 46) + 'px)'; };
-  zone.addEventListener('pointerdown', e => { e.preventDefault(); sid = e.pointerId; sx = e.clientX; try { zone.setPointerCapture(sid); } catch (_) {} });
-  zone.addEventListener('pointermove', e => { if (e.pointerId === sid) setA(clamp((e.clientX - sx) / 58, -1, 1)); });
+  const setA = v => { input.analog = v; knob.style.transform = 'translateX(' + (v * 46) + 'px)'; }, along = e => gfx.rot ? e.clientY : e.clientX;
+  zone.addEventListener('pointerdown', e => { e.preventDefault(); sid = e.pointerId; sx = along(e); try { zone.setPointerCapture(sid); } catch (_) {} });
+  zone.addEventListener('pointermove', e => { if (e.pointerId === sid) setA(clamp((along(e) - sx) / 58, -1, 1)); });
   const end = e => { if (e.pointerId === sid) { sid = null; setA(0); } };
   zone.addEventListener('pointerup', end); zone.addEventListener('pointercancel', end);
   addEventListener('keydown', e => {

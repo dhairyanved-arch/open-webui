@@ -2,7 +2,7 @@
 // world: renderer + post, textures, sky, track, terrain and scenery
 // ===================================================================
 const gfx = { renderer: null, composer: null, renderPass: null, bloom: null, fin: null, post: false, hdr: false, autoLow: false,
-  pr: 1, prMax: 2, prMin: .55, w: 1, h: 1, maxAniso: 1, acc: 0, frames: 0, glows: [], time: 0 };
+  pr: 1, prMax: 2, prMin: .55, w: 1, h: 1, rot: false, maxAniso: 1, acc: 0, frames: 0, glows: [], time: 0 };
 
 const FinalShader = {
   uniforms: { tDiffuse: { value: null }, blur: { value: 0 }, vig: { value: .9 }, exposure: { value: 1.2 }, time: { value: 0 } },
@@ -13,15 +13,13 @@ const FinalShader = {
     void main(){
       vec2 d = vUv - vec2(.5,.47);
       vec3 c = texture2D(tDiffuse, vUv).rgb;
-      if (blur > .01) {
-        float s = blur*.075;
+      float s = blur*.045*smoothstep(.3, .66, length(d));
+      if (s > .0008) {
         vec3 a = c;
-        a += texture2D(tDiffuse, vUv - d*s*.3).rgb;
-        a += texture2D(tDiffuse, vUv - d*s*.6).rgb;
-        a += texture2D(tDiffuse, vUv - d*s*.9).rgb;
+        a += texture2D(tDiffuse, vUv - d*s*.4).rgb;
+        a += texture2D(tDiffuse, vUv - d*s*.8).rgb;
         a += texture2D(tDiffuse, vUv - d*s*1.2).rgb;
-        c = a*.2;
-        c.r = mix(c.r, texture2D(tDiffuse, vUv - d*s*1.9).r, .4);
+        c = a*.25;
       }
       c = aces(max(c,0.)*exposure);
       c = pow(c, vec3(1./2.2));
@@ -53,7 +51,11 @@ function initGfx() {
   if (window.visualViewport) visualViewport.addEventListener('resize', resize);
 }
 function resize() {
-  const b = $('app').getBoundingClientRect(), w = Math.max(1, Math.round(b.width)), h = Math.max(1, Math.round(b.height));
+  const app = $('app'), vw = window.innerWidth || document.documentElement.clientWidth, vh = window.innerHeight || document.documentElement.clientHeight;
+  const rot = gfx.rot = save.orient === 'landscape' && vh > vw * 1.05;
+  app.classList.toggle('rot', rot); app.style.width = rot ? vh + 'px' : ''; app.style.height = rot ? vw + 'px' : '';
+  const w = Math.max(1, app.clientWidth), h = Math.max(1, app.clientHeight);
+  app.classList.toggle('narrow', w <= 520); app.classList.toggle('short', h <= 480);
   gfx.w = w; gfx.h = h; const r = gfx.renderer;
   r.setPixelRatio(gfx.pr); r.setSize(w, h, false);
   if (gfx.composer) { const ew = Math.floor(w * gfx.pr), eh = Math.floor(h * gfx.pr); gfx.composer.setSize(ew, eh); gfx.bloom.setSize(ew * .5, eh * .5); }

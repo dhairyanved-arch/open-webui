@@ -13,6 +13,8 @@ Open `index.html` in a browser (it needs a connection the first time, to fetch t
 | Brake / drift | DRIFT button (hold while steering to drift) | Shift or Down |
 | Pause | Pause button | Esc or P |
 
+On a phone held upright the game turns itself sideways (landscape mode); switch it with the rotate button on the home screen or Screen in Settings.
+
 The car accelerates on its own. Drifting, air time, pickups and knocking out rivals refill nitro. Credits from each race buy faster cars in the garage.
 
 ## Build

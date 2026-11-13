@@ -98,8 +98,9 @@ function initUi() {
   click('btnSettings', () => { audio.init(); audio.ui(); $('menuTitle').textContent = 'Settings'; $('menuRestart').hidden = $('menuQuit').hidden = true; $('menuResume').firstElementChild.textContent = 'Done'; syncOptions(); $('menu').hidden = false; });
   document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
     const k = b.parentElement.dataset.opt; save[k] = b.dataset.v; storeSave(); audio.init(); syncOptions();
-    if (k === 'quality') { gfx.autoLow = false; gfx.pr = Math.min(gfx.prMax, 1.6); applyQuality(); } else if (k === 'steer') $('touch').className = save.steer === 'slide' ? 'slide' : ''; else audio.applySettings();
+    if (k === 'orient') resize(); else if (k === 'quality') { gfx.autoLow = false; gfx.pr = Math.min(gfx.prMax, 1.6); applyQuality(); } else if (k === 'steer') $('touch').className = save.steer === 'slide' ? 'slide' : ''; else audio.applySettings();
     audio.ui(); }));
+  click('btnRotate', () => { audio.init(); audio.ui(); save.orient = save.orient === 'landscape' ? 'device' : 'landscape'; storeSave(); resize(); });
   const fs = $('btnFull'), root = document.documentElement;
   if (!document.fullscreenEnabled || !root.requestFullscreen) fs.hidden = true;
   else click('btnFull', () => { audio.ui(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {});

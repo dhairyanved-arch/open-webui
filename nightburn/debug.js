@@ -1,7 +1,7 @@
 
 // test-only hooks (not part of the shipped build)
 window.__nb = {
-  get race() { return race; }, save, input,
+  get race() { return race; }, get show() { return show; }, gfx, save, input,
   info() { const T = race.T; return { L: Math.round(T.L), minR: Math.round(T.minRadius), ramps: T.ramps.map(r => Math.round(r.s0)), pickups: T.pickups.length }; },
   // run the race with a simple robot driver; returns a summary
   sim(maxT, useNitro, useDrift) {
