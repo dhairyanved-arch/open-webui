@@ -1,0 +1,17 @@
+{
+  "name": "songvid-renderer",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Headless-Chromium frame renderer for the song video pipeline",
+  "scripts": {
+    "render": "node render.cjs"
+  },
+  "dependencies": {
+    "@fontsource/caveat": "^5.0.0",
+    "@fontsource/inter": "^5.0.0",
+    "@fontsource/permanent-marker": "^5.0.0",
+    "@fontsource/playfair-display": "^5.0.0",
+    "@fontsource/special-elite": "^5.0.0",
+    "@fontsource/unifrakturcook": "^5.0.0"
+  }
+}

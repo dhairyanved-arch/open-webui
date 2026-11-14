@@ -1,0 +1,133 @@
+{
+	"_about": "Art direction for a late-night, campfire-and-open-road look. It holds only the visual treatment and generic theme-to-prop routing; lyric text is supplied at run time from your own lyrics file.",
+	"look": {
+		"desk": "walnut",
+		"tones": [
+			"night",
+			"ember",
+			"dusk"
+		],
+		"photos": [
+			"campfire",
+			"stars",
+			"figures",
+			"shore",
+			"road",
+			"hills"
+		],
+		"accent": "#ffb24a",
+		"masthead": "The Midnight Courier"
+	},
+	"defaults": {
+		"chat": {
+			"contact": "Dad",
+			"history": [
+				"you awake, kid?",
+				"yeah",
+				"come sit by the fire"
+			],
+			"sides": [
+				"in",
+				"in",
+				"in"
+			],
+			"time": "23:52"
+		},
+		"notification": {
+			"sender": "Dad",
+			"time": "23:52",
+			"date": "Saturday, late"
+		},
+		"letter": {
+			"greeting": "Kid \u2014",
+			"sign": "\u2014 Dad",
+			"date": "Summer, long ago"
+		},
+		"polaroid": {
+			"photos": [
+				"campfire",
+				"figures",
+				"shore"
+			],
+			"tones": [
+				"ember",
+				"dusk"
+			]
+		},
+		"post": {
+			"place": "somewhere worth remembering"
+		},
+		"map": {
+			"from": "Home",
+			"to": "Anywhere",
+			"places": [
+				"The Shore",
+				"Old Harbour",
+				"Lookout Point",
+				"Pine Ridge",
+				"Home"
+			],
+			"eta": "a lifetime",
+			"distance": "no fixed route"
+		},
+		"ticket": {
+			"from": "HOME",
+			"to": "FAR",
+			"label": "ADVICE TO TRAVELLER",
+			"carrier": "ONE LIFE \u00b7 ONE WAY"
+		},
+		"weather": {
+			"location": "Wherever you are"
+		},
+		"book": {
+			"color": "navy",
+			"top": "NOTES FROM MY FATHER"
+		}
+	},
+	"rules": [
+		{
+			"match": "\\b(thunder|storms?|rain\\w*|clouds?|lightning)\\b",
+			"prop": "weather",
+			"opts": {
+				"condition": "storm",
+				"alert": "Storm warning"
+			}
+		},
+		{
+			"match": "\\b(fire|flames?|burn\\w*|spark\\w*)\\b",
+			"prop": "sticky",
+			"opts": {
+				"doodle": "flame",
+				"color": "yellow"
+			}
+		},
+		{
+			"match": "\\b(stars?|sky|skies|moon)\\b",
+			"prop": "stars"
+		},
+		{
+			"match": "\\b(sea|ocean|shores?|sail\\w*|travel\\w*|journey|far)\\b",
+			"prop": "ticket"
+		},
+		{
+			"match": "\\b(home|road|way|map|lost)\\b",
+			"prop": "map"
+		},
+		{
+			"match": "\\b(remember\\w*|memor\\w*|young\\w*|years?)\\b",
+			"prop": "polaroid"
+		},
+		{
+			"match": "\\b(nights?|forever|never|always)\\b",
+			"prop": "newspaper",
+			"opts": {
+				"edition": "MIDNIGHT EDITION",
+				"kicker": "Some evenings refuse to end, sources confirm"
+			}
+		},
+		{
+			"match": "\\b(father|dad|said|told|says)\\b",
+			"prop": "letter"
+		}
+	]
+}

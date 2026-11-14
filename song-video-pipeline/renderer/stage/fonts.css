@@ -1,0 +1,14 @@
+/* Open-licensed fonts, installed by `npm install` in ../ (see package.json). */
+@font-face { font-family: 'Inter'; font-weight: 400; src: url('../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 500; src: url('../node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 600; src: url('../node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 700; src: url('../node_modules/@fontsource/inter/files/inter-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Caveat'; font-weight: 600; src: url('../node_modules/@fontsource/caveat/files/caveat-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Caveat'; font-weight: 700; src: url('../node_modules/@fontsource/caveat/files/caveat-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Permanent Marker'; font-weight: 400; src: url('../node_modules/@fontsource/permanent-marker/files/permanent-marker-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Playfair Display'; font-weight: 400; src: url('../node_modules/@fontsource/playfair-display/files/playfair-display-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Playfair Display'; font-weight: 400; font-style: italic; src: url('../node_modules/@fontsource/playfair-display/files/playfair-display-latin-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Playfair Display'; font-weight: 700; src: url('../node_modules/@fontsource/playfair-display/files/playfair-display-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Playfair Display'; font-weight: 900; src: url('../node_modules/@fontsource/playfair-display/files/playfair-display-latin-900-normal.woff2') format('woff2'); }
+@font-face { font-family: 'UnifrakturCook'; font-weight: 700; src: url('../node_modules/@fontsource/unifrakturcook/files/unifrakturcook-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Special Elite'; font-weight: 400; src: url('../node_modules/@fontsource/special-elite/files/special-elite-latin-400-normal.woff2') format('woff2'); }

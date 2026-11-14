@@ -1,0 +1,13 @@
+{
+	"look": { "desk": "walnut", "tones": ["night", "ember", "dusk"], "accent": "#ffb24a", "masthead": "The Late Edition" },
+	"rules": [
+		{ "match": "\\bmap\\b", "prop": "map", "opts": { "to": "Out of town", "from": "Home", "places": ["Old Quarter", "Riverside", "Night Market", "The Overlook", "Station Rd"] } },
+		{ "match": "\\btext me\\b", "prop": "chat", "opts": { "contact": "June", "history": ["you still awake?", "always", "car's packed"] } },
+		{ "match": "\\briver\\b", "prop": "ticket", "opts": { "from": "HERE", "to": "GONE", "label": "DESTINATION" } },
+		{ "match": "\\bsearch\\b", "prop": "search" },
+		{ "match": "\\bfront page\\b", "prop": "newspaper" },
+		{ "match": "\\bpicture\\b", "prop": "polaroid", "opts": { "photos": ["road", "figures", "city"] } },
+		{ "match": "\\bpin\\b", "prop": "sticky" },
+		{ "match": "\\bstars\\b", "prop": "stars" }
+	]
+}
