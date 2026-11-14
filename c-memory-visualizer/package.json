@@ -1,0 +1,12 @@
+{
+  "name": "c-memory-visualizer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Step through C programs in the browser and watch the stack, heap, and pointers change.",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "start": "python3 -m http.server 8080"
+  },
+  "license": "MIT"
+}
