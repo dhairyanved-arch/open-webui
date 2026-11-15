@@ -259,7 +259,7 @@ export default function PortfolioCity() {
 							</div>
 							<div className="text-right">
 								<div className="kicker">Today</div>
-								<div className={cn('num mt-0.5 text-[15px] leading-none', layout.dayPnl >= 0 ? 'text-bull' : 'text-bear')}>
+								<div data-testid="portfolio-day" className={cn('num mt-0.5 text-[15px] leading-none', layout.dayPnl >= 0 ? 'text-bull' : 'text-bear')}>
 									{formatInrSigned(layout.dayPnl)}
 								</div>
 								<div className={cn('num mt-1 text-[11px]', layout.dayPnl >= 0 ? 'text-bull' : 'text-bear')}>{formatPctSigned(layout.dayChangePct)}</div>
@@ -294,7 +294,7 @@ export default function PortfolioCity() {
 								<TabsTrigger value="json">JSON</TabsTrigger>
 							</TabsList>
 							{selected && (
-								<span className="num truncate pl-3 text-[10.5px] text-muted-foreground">
+								<span data-testid="selected-holding" className="num truncate pl-3 text-[10.5px] text-muted-foreground">
 									selected <span className="text-foreground">{selected.ticker}</span>
 								</span>
 							)}

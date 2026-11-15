@@ -84,7 +84,7 @@
 	--animate-marquee: marquee 60s linear infinite;
 	--animate-flash-bull: flash-bull 1.4s ease-out;
 	--animate-flash-bear: flash-bear 1.4s ease-out;
-	--animate-row-in: row-in 0.28s ease-out;
+	--animate-row-in: row-in 0.16s ease-out;
 	--animate-pulse-dot: pulse-dot 1.8s ease-in-out infinite;
 	--animate-aurora: aurora 22s ease-in-out infinite alternate;
 	--animate-sheen: sheen 5s linear infinite;
@@ -121,8 +121,8 @@
 }
 @keyframes row-in {
 	from {
-		opacity: 0;
-		transform: translateY(-6px);
+		opacity: 0.45;
+		transform: translateY(-4px);
 	}
 	to {
 		opacity: 1;

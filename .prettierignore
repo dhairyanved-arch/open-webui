@@ -312,3 +312,5 @@ cypress/screenshots
 
 
 /static/*
+# Standalone React app with its own toolchain
+alpha-omni-terminal

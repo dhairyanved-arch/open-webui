@@ -145,7 +145,7 @@ function Workspace() {
 		if (sourceSeed !== seed) {
 			loadTemplate(universe.algoTemplates[0], seed);
 			setActiveTemplate(universe.algoTemplates[0].id);
-			requestAnimationFrame(() => flow.fitView({ padding: 0.18, duration: 300 }));
+			requestAnimationFrame(() => flow.fitView({ padding: 0.07, duration: 300 }));
 		}
 	}, [seed, sourceSeed, universe, loadTemplate, flow]);
 
@@ -226,7 +226,7 @@ function Workspace() {
 								onClick={() => {
 									loadTemplate(t, seed);
 									setActiveTemplate(t.id);
-									requestAnimationFrame(() => flow.fitView({ padding: 0.18, duration: 300 }));
+									requestAnimationFrame(() => flow.fitView({ padding: 0.07, duration: 300 }));
 								}}
 							>
 								{t.name}
@@ -263,7 +263,7 @@ function Workspace() {
 							onConnect={onConnect}
 							isValidConnection={isValidConnection}
 							fitView
-							fitViewOptions={{ padding: 0.18 }}
+							fitViewOptions={{ padding: 0.07 }}
 							minZoom={0.15}
 							maxZoom={2}
 							deleteKeyCode={['Backspace', 'Delete']}
@@ -321,38 +321,43 @@ function Workspace() {
 					flush
 					still
 					className="min-h-[420px] overflow-hidden"
-					kicker={`Compiled output · ${compiled.rules.length} rule${compiled.rules.length === 1 ? '' : 's'}`}
-					title={
-						<span className="flex items-center gap-2">
-							Live script
-							{errors > 0 ? (
-								<Badge variant="bear">{errors} error{errors === 1 ? '' : 's'}</Badge>
-							) : warnings > 0 ? (
-								<Badge variant="primary">{warnings} warning{warnings === 1 ? '' : 's'}</Badge>
-							) : (
-								<Badge variant="bull">valid</Badge>
-							)}
-						</span>
-					}
+					kicker="Compiled output"
+					title="Live script"
 					actions={
-						<>
-							<Tabs value={tab} onValueChange={(v) => setTab(v as 'python' | 'json')}>
-								<TabsList>
-									<TabsTrigger value="python">
-										<FileCode2 /> Python
-									</TabsTrigger>
-									<TabsTrigger value="json">
-										<Braces /> JSON
-									</TabsTrigger>
-								</TabsList>
-							</Tabs>
-							<Button variant="outline" size="icon-sm" onClick={copy} aria-label="Copy output to clipboard">
-								{copied ? <Check className="text-bull" /> : <Copy />}
-							</Button>
-						</>
+						errors > 0 ? (
+							<Badge variant="bear">
+								{errors} error{errors === 1 ? '' : 's'}
+							</Badge>
+						) : warnings > 0 ? (
+							<Badge variant="primary">
+								{warnings} warning{warnings === 1 ? '' : 's'}
+							</Badge>
+						) : (
+							<Badge variant="bull">valid</Badge>
+						)
 					}
 					bodyClassName="flex flex-col"
 				>
+					<div className="flex shrink-0 items-center justify-between gap-2 px-4 pb-2.5">
+						<Tabs value={tab} onValueChange={(v) => setTab(v as 'python' | 'json')}>
+							<TabsList>
+								<TabsTrigger value="python">
+									<FileCode2 /> Python
+								</TabsTrigger>
+								<TabsTrigger value="json">
+									<Braces /> JSON
+								</TabsTrigger>
+							</TabsList>
+						</Tabs>
+						<div className="flex items-center gap-2">
+							<span className="num text-[10.5px] whitespace-nowrap text-muted-foreground">
+								{compiled.rules.length} rule{compiled.rules.length === 1 ? '' : 's'} · {source.split('\n').length} lines
+							</span>
+							<Button variant="outline" size="icon-sm" onClick={copy} aria-label="Copy output to clipboard">
+								{copied ? <Check className="text-bull" /> : <Copy />}
+							</Button>
+						</div>
+					</div>
 					{compiled.rules.length > 0 && (
 						<div className="thin-scroll max-h-24 shrink-0 overflow-y-auto border-y border-white/[0.06] bg-black/20 px-4 py-2">
 							{compiled.rules.map((r) => (

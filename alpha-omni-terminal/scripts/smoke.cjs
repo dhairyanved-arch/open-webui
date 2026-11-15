@@ -73,6 +73,16 @@ async function fingerprint(page, selector) {
 	return h;
 }
 
+/** Poll until `probe()` is truthy — the app is given time, never a fixed sleep. */
+async function until(probe, timeoutMs = 8000) {
+	const start = Date.now();
+	for (;;) {
+		if (await probe()) return true;
+		if (Date.now() - start > timeoutMs) return false;
+		await new Promise((r) => setTimeout(r, 100));
+	}
+}
+
 async function dragSlider(page, label, fraction) {
 	const thumb = page.getByRole('slider', { name: label }).first();
 	await thumb.scrollIntoViewIfNeeded();
@@ -92,9 +102,8 @@ const modules = {
 		check((await page.getByTestId('sim-meta').innerText()).includes('10,000'), 'IPO: runs 10,000 iterations');
 		const before = await page.getByText('P(any allotment)').locator('..').innerText();
 		await dragSlider(page, 'Retail', 0.2);
-		await page.waitForTimeout(300);
-		const after = await page.getByText('P(any allotment)').locator('..').innerText();
-		check(before !== after, 'IPO: allotment odds respond to the retail subscription slider');
+		const changed = await until(async () => (await page.getByText('P(any allotment)').locator('..').innerText()) !== before);
+		check(changed, 'IPO: allotment odds respond to the retail subscription slider');
 		check((await norm.getAttribute('data-ok')) === 'true', 'IPO: still normalised after input change');
 		await page.getByRole('radio', { name: 'sNII ₹2–10L' }).click();
 		await page.waitForTimeout(300);
@@ -111,11 +120,11 @@ const modules = {
 			const fp0 = await fingerprint(page, 'canvas');
 			const readout0 = await page.getByTestId('greeks-readout').innerText();
 			await dragSlider(page, label, 0.85);
-			await page.waitForTimeout(500);
-			const fp1 = await fingerprint(page, 'canvas');
-			const readout1 = await page.getByTestId('greeks-readout').innerText();
-			check(fp0 !== fp1, `Vol surface: mesh re-renders when "${label}" moves`);
-			check(readout0 !== readout1, `Vol surface: Greeks recompute when "${label}" moves`);
+			check(await until(async () => (await fingerprint(page, 'canvas')) !== fp0), `Vol surface: mesh re-renders when "${label}" moves`);
+			check(
+				await until(async () => (await page.getByTestId('greeks-readout').innerText()) !== readout0),
+				`Vol surface: Greeks recompute when "${label}" moves`
+			);
 		}
 		for (const metric of ['Delta', 'Gamma', 'Vega', 'Theta', 'Implied vol', 'Value']) {
 			await page.getByRole('radio', { name: metric, exact: true }).click();
@@ -148,15 +157,17 @@ const modules = {
 		// edit a parameter → output must change in real time
 		const threshold = page.locator('.react-flow__node').filter({ hasText: 'RSI' }).first().getByLabel('Threshold');
 		await threshold.fill('82');
-		await page.waitForTimeout(200);
-		const py1 = await page.getByTestId('code-output').innerText();
-		check(py1.includes('82') && py0 !== py1, 'Algo builder: editing a node parameter rewrites the script');
+		const rewritten = await until(async () => {
+			const py1 = await page.getByTestId('code-output').innerText();
+			return py1 !== py0 && py1.includes('> 82');
+		});
+		check(rewritten, 'Algo builder: editing a node parameter rewrites the script');
 		// drag a new node from the palette onto the canvas
 		const source = page.getByTestId('palette-macd');
 		const canvas = page.locator('.react-flow__pane');
 		const cbox = await canvas.boundingBox();
-		await source.dragTo(canvas, { targetPosition: { x: cbox.width * 0.5, y: cbox.height * 0.82 } });
-		await page.waitForTimeout(300);
+		await source.dragTo(canvas, { targetPosition: { x: cbox.width * 0.5, y: cbox.height * 0.88 } });
+		await until(async () => (await page.locator('.react-flow__node').count()) === nodes0 + 1);
 		const nodes1 = await page.locator('.react-flow__node').count();
 		check(nodes1 === nodes0 + 1, 'Algo builder: drag-and-drop adds a node to the canvas');
 		// wire the data source into the new node by dragging between handles
@@ -171,9 +182,10 @@ const modules = {
 		await page.mouse.move((fb.x + tb.x) / 2, (fb.y + tb.y) / 2, { steps: 8 });
 		await page.mouse.move(tb.x + tb.width / 2, tb.y + tb.height / 2, { steps: 8 });
 		await page.mouse.up();
-		await page.waitForTimeout(300);
-		const edges1 = await page.locator('.react-flow__edge').count();
-		check(edges1 === edges0 + 1, 'Algo builder: dragging handle-to-handle wires two nodes');
+		check(
+			await until(async () => (await page.locator('.react-flow__edge').count()) === edges0 + 1),
+			'Algo builder: dragging handle-to-handle wires two nodes'
+		);
 		await page.getByRole('tab', { name: 'JSON' }).click();
 		const json = await page.getByTestId('code-output').innerText();
 		let parsed = null;
@@ -212,15 +224,20 @@ const modules = {
 		await page.waitForTimeout(2500);
 		check((await canvasCoverage(page)) > 0.05, 'City: WebGL canvas is drawing');
 		const fp0 = await fingerprint(page, 'canvas');
+		const today0 = await page.getByTestId('portfolio-day').innerText();
 		await page.getByRole('button', { name: 'Bear day' }).click();
-		await page.waitForTimeout(1200);
-		const fp1 = await fingerprint(page, 'canvas');
-		check(fp0 !== fp1, 'City: weather changes when the market is shocked');
+		check(
+			await until(async () => (await page.getByTestId('portfolio-day').innerText()) !== today0),
+			'City: a market shock redraws the day\'s moves'
+		);
+		check((await page.getByTestId('portfolio-day').innerText()).includes('−'), 'City: a bear day puts the book in the red');
+		check(await until(async () => (await fingerprint(page, 'canvas')) !== fp0), 'City: weather changes when the market is shocked');
 		const total0 = await page.getByTestId('portfolio-total').innerText();
 		await dragSlider(page, 'Value — Reliance Industries', 0.95);
-		await page.waitForTimeout(700);
-		const total1 = await page.getByTestId('portfolio-total').innerText();
-		check(total0 !== total1, 'City: allocation slider updates the portfolio');
+		check(
+			await until(async () => (await page.getByTestId('portfolio-total').innerText()) !== total0),
+			'City: allocation slider updates the portfolio'
+		);
 		check((await canvasCoverage(page)) > 0.05, 'City: still drawing after re-allocation');
 		// sweep the pointer across the skyline until a building reports itself
 		const cbox = await page.locator('canvas').first().boundingBox();
@@ -238,8 +255,10 @@ const modules = {
 			}
 		}
 		check(hovered, 'City: hovering a building raises its holding card');
-		await page.waitForTimeout(300);
-		check((await page.getByText('selected', { exact: false }).count()) > 0, 'City: clicking a building selects the holding in the allocator');
+		check(
+			await until(async () => (await page.getByTestId('selected-holding').count()) > 0),
+			'City: clicking a building selects the holding in the allocator'
+		);
 		await page.mouse.move(cbox.x + 4, cbox.y + 4);
 		await page.getByRole('tab', { name: 'JSON' }).click();
 		const text = await page.getByLabel('Portfolio JSON').inputValue();
@@ -296,11 +315,12 @@ const modules = {
 			}
 			check(errors.length === mark, 'Shell: two laps through all five routes with no errors');
 			await page.getByRole('button', { name: 'Collapse sidebar' }).click();
-			await page.waitForTimeout(450);
-			const width = await page.locator('aside').evaluate((el) => el.getBoundingClientRect().width);
-			check(width < 90, `Shell: sidebar collapses to an icon rail (${Math.round(width)}px)`);
+			const railWidth = () => page.locator('aside').evaluate((el) => el.getBoundingClientRect().width);
+			const collapsed = await until(async () => (await railWidth()) < 90);
+			check(collapsed, `Shell: sidebar collapses to an icon rail (${Math.round(await railWidth())}px)`);
 			await page.screenshot({ path: path.join(OUT, 'shell-collapsed.png') });
 			await page.getByRole('button', { name: 'Expand sidebar' }).click();
+			check(await until(async () => (await railWidth()) > 200), 'Shell: sidebar expands again');
 		}
 	} finally {
 		if (browser) await browser.close();

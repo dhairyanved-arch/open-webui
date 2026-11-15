@@ -11,3 +11,6 @@ node_modules
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+
+# Standalone React app with its own toolchain
+alpha-omni-terminal

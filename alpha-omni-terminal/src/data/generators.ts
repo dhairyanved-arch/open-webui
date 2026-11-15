@@ -283,17 +283,17 @@ export function generateAlgoTemplates(seed: number): AlgoTemplate[] {
 				{
 					id: 'n2',
 					type: 'ma_cross',
-					position: { x: 300, y: 0 },
+					position: { x: 275, y: 0 },
 					params: { kind: 'EMA', fast: 9, slow: 21, direction: 'bullish' }
 				},
-				{ id: 'n3', type: 'price_vwap', position: { x: 300, y: 210 }, params: { side: 'above' } },
-				{ id: 'n4', type: 'time_window', position: { x: 300, y: 370 }, params: { start: '09:30', end: '14:45' } },
-				{ id: 'n5', type: 'and', position: { x: 600, y: 80 }, params: {} },
-				{ id: 'n6', type: 'and', position: { x: 820, y: 200 }, params: {} },
+				{ id: 'n3', type: 'price_vwap', position: { x: 275, y: 225 }, params: { side: 'above' } },
+				{ id: 'n4', type: 'time_window', position: { x: 275, y: 390 }, params: { start: '09:30', end: '14:45' } },
+				{ id: 'n5', type: 'and', position: { x: 550, y: 110 }, params: {} },
+				{ id: 'n6', type: 'and', position: { x: 550, y: 300 }, params: {} },
 				{
 					id: 'n7',
 					type: 'enter_long',
-					position: { x: 1060, y: 160 },
+					position: { x: 825, y: 250 },
 					params: { sizePct: 15, stopLossPct: 1.2, takeProfitPct: 3 }
 				}
 			],
