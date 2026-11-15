@@ -154,7 +154,8 @@
 				box.append(el);
 				const tt = SV.timedText(txt, ch.map((w) => ({ ...w, li: 0 })), { mode: 'pop', transform: (s) => s.toUpperCase() });
 				SV.fit(txt, 270, 330, 120, 30);
-				return { el, tt, rot, at: ch[0].s - 0.12 };
+				// blank strips land as the camera arrives; the words punch in on time
+				return { el, tt, rot, at: Math.min(ch[0].s - 0.12, ctx.t0 + 0.02 + i * 0.07) };
 			});
 			return {
 				update(t) {

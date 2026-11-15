@@ -69,6 +69,9 @@ python songvid.py make --audio excerpt.m4a --lyrics track.lrc --title "Title" --
 # previews are excerpts, so say where the preview starts in the song
 python songvid.py make "Title - Artist" --clip-offset 45
 
+# no audio yet: time the lines on a tempo grid and add the music afterwards
+python songvid.py make --silent --bpm 103 --lyrics words.lrc --title "Title" --duration 40
+
 # see the plan without rendering, edit it, then render from it
 python songvid.py make ... --plan-only
 python songvid.py make ... --storyboard out/<name>/storyboard.json

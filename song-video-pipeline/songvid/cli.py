@@ -56,6 +56,17 @@ def resolve(args, work: Path) -> dict:
     audio_path = args.audio
     is_preview = False
 
+    if args.silent:
+        # no audio at all: render against silence, on a beat grid given by --bpm
+        if not args.lyrics or not title:
+            raise SystemExit("--silent needs --lyrics and --title.")
+        audio_path = str(work / "silence.wav")
+        subprocess.run(
+            ["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", f"{args.duration:.3f}", audio_path],
+            check=True,
+        )
+        args.offline = True
+
     if not audio_path or not title:
         if args.offline:
             raise SystemExit("--offline needs --audio (and --title).")
@@ -144,6 +155,9 @@ def build_timeline(args, work: Path) -> Path:
     y = A.decode(clip_wav)
     bpm, beats = A.tempo_and_beats(A.rhythm_envelope(y, 22050), 22050)
     ons = A.onsets(A.onset_envelope(y, 22050), 22050)
+    if args.bpm:
+        bpm = float(args.bpm)
+        beats = [round(k * 60.0 / bpm, 3) for k in range(int(dur * bpm / 60.0) + 1)]
     log(f"tempo ≈ {bpm:.0f} BPM, {len(beats)} beats, {len(ons)} onsets")
 
     if lines is None:
@@ -250,6 +264,8 @@ def main(argv: list[str] | None = None) -> None:
     m.add_argument("--clip-offset", type=float, help="if --audio is an excerpt: where it starts in the full song (s)")
     m.add_argument("--first-line-at", type=float, help="untimed lyrics: when the first line starts (s)")
     m.add_argument("--beats-per-line", type=int, default=8, help="untimed lyrics: beats between lines (default 8)")
+    m.add_argument("--bpm", type=float, help="use this tempo for the beat grid instead of detecting it")
+    m.add_argument("--silent", action="store_true", help="no audio: time the video on the --bpm grid and add the music later")
     m.add_argument("--art", help="art-direction JSON (look + keyword→prop rules)")
     m.add_argument("--storyboard", help="explicit storyboard JSON (skips the automatic director)")
     m.add_argument("--plan-only", action="store_true", help="write storyboard.json/timeline.json but do not render")

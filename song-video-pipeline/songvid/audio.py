@@ -110,5 +110,7 @@ def level_envelope(y: np.ndarray, sr: int, rate: int = 30) -> list[float]:
     if n == 0:
         return []
     rms = np.sqrt((y[: n * win].reshape(n, win) ** 2).mean(axis=1))
+    if rms.max() < 1e-5:  # silence: let the renderer animate on its own
+        return []
     rms = rms / (np.percentile(rms, 98) + 1e-9)
     return [round(float(v), 3) for v in np.clip(rms, 0, 1)]
