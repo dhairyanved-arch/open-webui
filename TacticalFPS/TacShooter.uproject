@@ -1,0 +1,17 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.2",
+	"Category": "",
+	"Description": "5v5 tactical mobile FPS - bomb defusal and team deathmatch",
+	"Modules": [
+		{
+			"Name": "TacShooter",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [ "Engine", "CoreUObject" ]
+		}
+	],
+	"Plugins": [
+		{ "Name": "Niagara", "Enabled": true }
+	]
+}
