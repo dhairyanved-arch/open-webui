@@ -138,8 +138,9 @@ def pick_window(lines: list[dict], duration: float, track_end: float, lead: floa
     return fit_window(lines, best, duration, track_end)
 
 
-def fit_window(lines: list[dict], start: float, duration: float, track_end: float) -> tuple[float, float]:
-    """Trim the window so it never cuts a line off mid-phrase."""
+def fit_window(lines: list[dict], start: float, duration: float, track_end: float, shrink: bool = True) -> tuple[float, float]:
+    """Trim the window so it never cuts a line off mid-phrase. With shrink=False
+    (an explicit --start) the requested length is kept unless a line would be cut."""
     duration = min(duration, track_end - start)
     inside = [l for l in lines if l["start"] >= start - 0.05 and l["start"] < start + duration]
     if inside:
@@ -149,7 +150,7 @@ def fit_window(lines: list[dict], start: float, duration: float, track_end: floa
         if last_end > start + duration - 0.3 and len(inside) > 1:
             # the final line would be cut off: end the clip just before it starts
             duration = min(duration, last["start"] - start - 0.1)
-        else:
+        elif shrink:
             duration = min(duration, max(8.0, last_end - start + 2.4))
     return round(start, 3), round(duration, 3)
 

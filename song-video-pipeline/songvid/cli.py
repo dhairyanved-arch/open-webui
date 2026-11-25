@@ -137,7 +137,7 @@ def build_timeline(args, work: Path) -> Path:
             audio_start = start - offset
         else:
             if args.start is not None:
-                start, dur = L.fit_window(lines, args.start, want, audio_len)
+                start, dur = L.fit_window(lines, args.start, want, audio_len, shrink=False)
             else:
                 start, dur = L.pick_window(lines, want, audio_len)
             audio_start = start
